@@ -24,9 +24,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "insecure-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS", "localhost")]
-
-
+ALLOWED_HOSTS = [
+    "panaderia-platanar-san-carlos.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
