@@ -1,0 +1,379 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="icon" href="{% static 'imgs/favicon.png' %}" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles/main.css' %}?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% include 'base/navbarBase.html' %}
+
+    <!-- Contenedor principal -->
+    <div class="main_container">
+        <div class="Poster">
+            <div class="poster-text" id="poster-text"></div>
+        </div>
+        <div class="logo"></div>
+        <div class="link_logo">
+            <a href="#productos" class="btn btn-outline-dark btn-lg rounded-pill btn-animado">
+                <strong>Explorar Productos</strong>
+            </a>
+        </div>
+    </div>
+
+    <!-- Sección scroll -->
+    <div class="content1-container hidden">
+        <div class="content1-text hidden">'Calidad y servicio a su mesa.'</div>
+    </div>
+    <!-- SubTitulo -->
+    <h2 class="subtitulo"> Nuestros servicios</h2>
+    {% include 'base/navbarMenu.html' %}
+
+    <!-- Contenedor dinámico de productos -->
+    <div class="content2-container" id="content2">
+        <img src="" alt="imagen dinamica" id="imagenAnimada">
+        <div class="content2-text">
+            <h2 id="descripcionTitulo">Descripción del Producto</h2>
+            <p id="contenidoDescripcion">Aquí va la descripción del producto seleccionado.</p>
+        </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Nuestros Productos -->
+    <div class="nuestrosProductos">
+        <h1 id="productos">Nuestros Productos</h1>
+        <div class="productos row g-4">
+            {% for categoria in categorias %}
+                <h2>{{ categoria.nombre }}:</h2>
+                {% for producto in categoria.producto_set.all %}
+                    <div class="col-6 col-md-3">
+                        <div class="productoContainer" style="background-image: url('{{ producto.imagen.url }}');">
+                            <div class="descripcionProducto">{{ producto.descripcion }}</div>
+                            <div class="productoContent">
+                                <strong class="tituloProducto">{{ producto.nombre }}</strong>
+                                <p>₡{{ producto.precio }}</p>
+                                <button class="btnProducto" data-producto="{{ producto.nombre }}">Hacer pedido</button>
+                            </div>
+                            <div class="estadoProducto">
+                                {% if producto.estado != "nada" %}
+                                    {% if producto.estado == "disponible" %}
+                                        <span class="btn btn-success btn-sm mt-2">Disponible</span>
+                                    {% elif producto.estado == "agotado" %}
+                                        <span class="btn btn-danger btn-sm mt-2">Agotado</span>
+                                    {% elif producto.estado == "promocion" %}
+                                        <span class="btn btn-warning btn-sm mt-2 text-dark">Promoción</span>
+                                    {% elif producto.estado == "nuevo" %}
+                                        <span class="btn btn-info btn-sm mt-2 text-dark">Nuevo</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No hay productos en esta categoría</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sección De comentarios -->
+    <div class="container-comentarios">
+        <h2>Comentarios</h2>
+        <div class="comentarios">
+            {% for comentario in comentarios %}
+                <div class="comentario">
+                    <h3>{{ comentario.nombre }}</h3>
+                    <ul>
+                        <li>{{ comentario.contenido }}</li>
+                        <li class="comentarioDate">{{ comentario.fecha_creacion }}</li>
+                    </ul>
+                </div>
+            {% empty %}
+                <p>No hay comentarios en esta disponibles</p>
+            {% endfor %}
+        </div>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#modalAgregarComentario">
+            Deja tu comentario!
+        </button>
+    </div>
+
+    <!-- Modal para agregar comentario -->
+    <div class="modal fade" id="modalAgregarComentario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content p-4">
+                <h5 class="mb-3 text-center">Agregar Comentario</h5>
+                <form method="post" action="{% url 'ingresar_comentario_main' %}">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    {% if error %}
+                        <div class="alert alert-danger mt-3">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Contáctenos -->
+    <div id="contacto" class="contactenos">
+        <div class="contactenosContnet">
+            <h2 class="mb-3">Panadería y Repostería Platanar</h2>
+            <p><strong><em>"Calidad y servicio a su mesa"</em></strong></p>
+            <p><em>"Desde 2018 entregando sabor y calidad"</em></p>
+            <p><strong>Nuestra dirección:</strong> Platanar de Florencia, 500 metros sur del puente sobre el río Platanar.</p>
+            <p><strong>Contamos con Servicios Especiales!:</strong> Repostería, todo tipo de pan y entregas especializadas</p>
+            <p><strong>Contáctenos llamando al <a href="tel:64767262">64767262</a> y haga su orden!</strong></p>
+            <ul>
+                <li>¡Haga sus pedidos ya!</li>
+                <li>Pago en efectivo, SINPE y tarjeta</li>
+                <!-- Botón de WhatsApp -->
+                <a href="https://wa.me/50664767262?text=¡Hola!%20Quiero%20hacer%20un%20pedido."
+                   target="_blank"
+                   class="btn btn-success my-2">
+                    📲 Contáctanos por WhatsApp
+                </a>
+            </ul>
+        </div>
+        <!-- Ubicación -->
+        <div class="ubicacion p-4">
+            <h3 class="mb-3">📍 Encuéntranos aquí</h3>
+            <div class="mapa">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d157.26019406313866!2d-84.4716397!3d10.412018!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa07169c7320aa3%3A0x16b3e8dc4d6e4b48!2sPanader%C3%ADa%20y%20Reposter%C3%ADa%20Platanar!5e1!3m2!1ses!2scr!4v1695081600000!5m2!1ses!2scr"
+                    width="100%"
+                    height="450"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </div>
+    <!-- FOOTER -->
+<!-- FOOTER -->
+<!-- FOOTER -->
+    <footer class="footer-custom text-dark pt-5 pb-4 mt-5">
+    <div class="container">
+        <div class="row">
+        <!-- Columna 1: Marca -->
+        <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Panadería y Repostería Platanar</h5>
+            <p><em>"Calidad y servicio a su mesa desde 2018"</em></p>
+            <p class="small">Florencia, San Carlos, Costa Rica</p>
+        </div>
+
+        <!-- Columna 2: Contacto -->
+        <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Contáctanos</h5>
+            <ul class="list-unstyled">
+            <li>📞 <a href="tel:64767262" class="text-dark">64767262</a></li>
+            <li>📧 <a href="mailto:panaderiaplatanar@gmail.com" class="text-dark">panaderiaplatanar@gmail.com</a></li>
+            <li>📲 <a href="https://wa.me/50664767262?text=¡Hola!%20Quiero%20hacer%20un%20pedido." target="_blank" class="text-success">WhatsApp directo</a></li>
+            </ul>
+        </div>
+
+        <!-- Columna 3: Redes Sociales -->
+        <div class="col-md-4 mb-3 text-md-end text-center">
+            <h5 class="fw-bold">Síguenos</h5>
+            <a href="#" class="text-dark mx-2"><i class="bi bi-facebook fs-4"></i></a>
+            <a href="#" class="text-dark mx-2"><i class="bi bi-instagram fs-4"></i></a>
+            <a href="#" class="text-dark mx-2"><i class="bi bi-tiktok fs-4"></i></a>
+        </div>
+        </div>
+
+        <hr class="border-dark">
+
+        <!-- Parte inferior -->
+        <div class="text-center">
+        <p class="mb-0">© 2025 Panadería Platanar. Todos los derechos reservados.</p>
+        </div>
+    </div>
+    </footer>
+   
+
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Texto rotativo del poster
+            const textos = [
+                "Bienvenido a Panadería Platanar.",
+                "Explora productos únicos...",
+                "Ofertas especiales cada semana.",
+                "Calidad y confianza para ti."
+            ];
+            const posterText = document.getElementById("poster-text");
+            let index = 0;
+
+            function mostrarTexto() {
+                posterText.textContent = textos[index];
+                posterText.classList.remove("slide-in");
+                void posterText.offsetWidth;
+                posterText.classList.add("slide-in");
+                index = (index + 1) % textos.length;
+            }
+
+            setTimeout(() => {
+                mostrarTexto();
+                setInterval(mostrarTexto, 6000);
+            }, 1500);
+
+            // Animación al hacer scroll content1
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show-container');
+                        const text = entry.target.querySelector('.content1-text');
+                        if (text) text.classList.add('show-text');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            const container = document.querySelector('.content1-container');
+            observer.observe(container);
+
+            // Elementos content2
+            const imangenAnimada = document.getElementById('imagenAnimada');
+            const content2Text = document.querySelector('.content2-text');
+            const descripcionTitulo = document.getElementById('descripcionTitulo');
+            const contenidoDescripcion = document.getElementById('contenidoDescripcion');
+
+            // Datos base de productos
+            const datos = {
+                reposteria: {
+                    img: "{% static 'imgs/reposteria_img.jpg' %}",
+                    titulo: "Repostería",
+                    descripcion: "Descubre nuestra repostería artesanal: sabores únicos, texturas irresistibles y un cuidado especial en cada detalle, pensados para acompañar tus mejores momentos."
+                },
+                panfresco: {
+                    img: "{% static 'imgs/panfresco_img.jpg' %}",
+                    titulo: "Pan Fresco",
+                    descripcion: "Disfruta del aroma y sabor del pan recién horneado cada día, crujiente por fuera, suave por dentro y preparado con ingredientes de la más alta calidad"
+                },
+                sinazucar: {
+                    img: "{% static 'imgs/sinazucar_img.jpg' %}",
+                    titulo: "Sin Azúcar",
+                    descripcion: "Disfruta de nuestra línea sin azúcar, creada para quienes buscan opciones saludables con todo el sabor y frescura del pan artesanal"
+                },
+                serviciosespeciales: {
+                    img: "{% static 'imgs/serviciosespeciales_img.jpg' %}",
+                    titulo: "Servicios Especiales",
+                    descripcion: "Ofrecemos atención personalizada y soluciones a medida para tus eventos y ocasiones especiales, siempre con la calidad que nos distingue."
+                }
+            };
+
+            // Animación automática al hacer scroll en content2
+            const content2Container = document.getElementById('content2');
+            const observer2 = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const data = datos.reposteria;
+
+                        imangenAnimada.classList.remove('show');
+                        setTimeout(() => {
+                            imangenAnimada.src = data.img;
+                            imangenAnimada.classList.add('show');
+                        }, 300);
+
+                        content2Text.classList.remove('show');
+                        setTimeout(() => {
+                            content2Text.classList.add('show');
+                            descripcionTitulo.textContent = data.titulo;
+                            contenidoDescripcion.textContent = data.descripcion;
+                        }, 600);
+
+                        observer2.unobserve(content2Container);
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer2.observe(content2Container);
+
+            // Interacción con el menú
+            const menulinks = document.querySelectorAll('.navbar-menu-list li a');
+            menulinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const key = link.getAttribute('data-img');
+                    const data = datos[key];
+
+                    imangenAnimada.classList.remove('show');
+                    setTimeout(() => {
+                        imangenAnimada.src = data.img;
+                        imangenAnimada.classList.add('show');
+                    }, 300);
+
+                    content2Text.classList.remove('show');
+                    setTimeout(() => {
+                        content2Text.classList.add('show');
+                        descripcionTitulo.textContent = data.titulo;
+                        contenidoDescripcion.textContent = data.descripcion;
+                    }, 600);
+                });
+            });
+            //submenu
+            const subtitulo = document.querySelector('.subtitulo');
+            const subtituloObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show-subtitulo');
+                        subtituloObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            if (subtitulo) {
+                subtituloObserver.observe(subtitulo);
+            }
+        });
+    </script>
+
+    <!-- Script para mostrar modal SOLO si hay errores -->
+    {% if error or form.errors %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('modalAgregarComentario'));
+            modal.show();
+        });
+    </script>
+    {% endif %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const botones = document.querySelectorAll(".btnProducto");
+        const numeroWhatsApp = "50664767262"; 
+
+        botones.forEach(boton => {
+        boton.addEventListener("click", function() {
+            const nombreProducto = this.getAttribute("data-producto");
+            const mensaje = `Hola, estoy interesado en hacer un pedido de: ${nombreProducto}`;
+            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, "_blank"); // abre WhatsApp en nueva pestaña/ventana
+        });
+        });
+    });
+    </script>
+</body>
+</html>

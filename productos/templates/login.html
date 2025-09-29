@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f5dc, #fcfcfc); 
+            min-height: 100vh;
+        }
+
+        /* Contenedor para centrar el título y el card */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column; /* uno debajo del otro */
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px); /* deja espacio para la navbar */
+            padding-top: 2rem; /* separación con la navbar */
+        }
+
+        .login-card {
+            position: relative; /* necesario para que ::before se posicione respecto a este div */
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+        }
+
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        .page-wrapper {
+            background-image: url("{% static 'imgs/loginFondo.png' %}");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 20%;
+             transition: background-size 1s ease-in-out;
+        }
+        .page-wrapper:hover {
+            background-size: 30%;
+        }
+        
+
+        .btn-primary {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        /* Mantener navbar fija */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    {% include 'base/navbarBase.html' %}
+
+    <div class="page-wrapper">
+        <h2>Iniciar sesión</h2>
+        <div class="login-card">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-primary" type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

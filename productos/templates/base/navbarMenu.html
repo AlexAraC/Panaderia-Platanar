@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navbar Menu</title>
+  <style>
+   
+    .navbar-wrapper {
+      text-align: center; 
+    }
+
+    .navbar-menu {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: rgb(228, 207, 181);
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px 20px;
+    }
+    .navbar-menu-list {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar-menu-list li {
+      margin: 0 15px;
+    }
+    .navbar-menu-list li a {
+      text-decoration: none;
+      color: #3B2F2F;
+      font-weight: bold;
+      padding: 5px 10px;
+      transition: color 0.3s ease, border-bottom 0.3s ease;
+      position: relative; 
+    }
+    .navbar-menu-list li a::after {
+      content: "";                
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: #333;     
+      transition: width 0.3s ease;
+    }
+    .navbar-menu-list li a:hover::after {
+      width: 100%;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      .navbar-menu {
+        display: block;
+        width: 80%;          /* más angosto */
+        margin: 15px auto;
+        padding: 8px 12px;   /* menos espacio */
+      }
+
+      .navbar-menu-list {
+        flex-direction: column; 
+        align-items: center;    
+      }
+      .navbar-menu-list li + li {
+         border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-menu-list li {
+        margin: 6px 0;
+        padding: 6px 12px;
+        border-radius: 6px; /* esquinas suaves */
+        transition: background-color 0.3s ease;
+      }
+
+      /* efecto al pasar el mouse */
+      .navbar-menu-list li:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+      }
+
+      .navbar-menu-list li a {
+        display: block;
+        padding: 6px 10px;   /* más pequeño */
+        font-size: 14px;     /* reduce texto */
+        width: auto;         /* solo ocupa lo necesario */
+        text-align: center;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="navbar-wrapper">
+    <nav class="navbar-menu">
+      <ul class="navbar-menu-list">
+        <li class="item1"><a href="#" data-img="reposteria">Repostería</a></li>
+        <li class="item2"><a href="#" data-img="panfresco">Pan Fresco</a></li>
+        <li class="item3"><a href="#" data-img="sinazucar">Sin Azúcar</a></li>
+        <li class="item4"><a href="#" data-img="serviciosespeciales">Servicios especiales</a></li>
+      </ul>
+    </nav>
+  </div>
+</body>
+</html>
