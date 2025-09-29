@@ -1,1 +1,1 @@
-web: gunicorn panaderiaPlatanar.wsgi
+web: gunicorn panaderiaPlatanar.wsgi:application
